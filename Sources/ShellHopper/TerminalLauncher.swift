@@ -37,14 +37,31 @@ enum TerminalLauncher {
         let escaped = shellQuote(path)
         let cdCommand = "cd \(escaped) && clear"
 
+        // If the terminal app isn't running yet, `activate` will spawn a fresh
+        // window for us. In that case "new tab" should land in that just-created
+        // window rather than opening a second tab inside it.
+        let effectiveBehavior: WindowBehavior = {
+            if behavior == .newTab && !isRunning(app) { return .existingWindow }
+            return behavior
+        }()
+
         let source: String
         switch app {
         case .terminal:
-            source = terminalScript(command: cdCommand, behavior: behavior)
+            source = terminalScript(command: cdCommand, behavior: effectiveBehavior)
         case .iterm:
-            source = itermScript(command: cdCommand, behavior: behavior)
+            source = itermScript(command: cdCommand, behavior: effectiveBehavior)
         }
         _ = runAppleScript(source)
+    }
+
+    private static func isRunning(_ app: TerminalApp) -> Bool {
+        let bundleId: String
+        switch app {
+        case .terminal: bundleId = "com.apple.Terminal"
+        case .iterm:    bundleId = "com.googlecode.iterm2"
+        }
+        return !NSRunningApplication.runningApplications(withBundleIdentifier: bundleId).isEmpty
     }
 
     private static func terminalScript(command: String, behavior: WindowBehavior) -> String {
