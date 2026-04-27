@@ -1,0 +1,24 @@
+{
+    "configurations": [
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:ShellHopper}",
+            "name": "Debug ShellHopper",
+            "target": "ShellHopper",
+            "configuration": "debug",
+            "preLaunchTask": "swift: Build Debug ShellHopper"
+        },
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:ShellHopper}",
+            "name": "Release ShellHopper",
+            "target": "ShellHopper",
+            "configuration": "release",
+            "preLaunchTask": "swift: Build Release ShellHopper"
+        }
+    ]
+}
